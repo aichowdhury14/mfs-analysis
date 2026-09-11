@@ -40,6 +40,11 @@ def load_provider_shares() -> pd.DataFrame:
     return df
 
 
+def load_remittance_annual() -> pd.DataFrame:
+    df = pd.read_csv(DATA_DIR / "mfs_remittance_annual.csv")
+    return df.sort_values("year").reset_index(drop=True)
+
+
 def industry_with_growth() -> pd.DataFrame:
     """Industry stats with year-over-year percent change columns added."""
     df = load_industry_stats().set_index("year")

@@ -47,11 +47,17 @@ def forecast_annual_volume(df: pd.DataFrame, periods: int = 3) -> pd.DataFrame:
 def forecast_monthly_volume(df: pd.DataFrame, periods: int = 6) -> pd.DataFrame:
     """Forecast total_transaction_value_crore_bdt for `periods` months ahead.
 
-    Fits log(value) ~ time_index by OLS (captures multiplicative growth),
+    Fits log(value) ~ elapsed_months by OLS (captures multiplicative growth),
     then exponentiates back. Confidence band from residual std on the log scale.
+
+    Uses actual elapsed months since the first observation, not row position -
+    the underlying press-reported series has real gaps (e.g. no confirmed figure
+    between March and August 2025), and treating each row as one equal time-step
+    would silently understate the true month-over-month growth rate.
     """
     d = df.dropna(subset=["total_transaction_value_crore_bdt"]).copy()
-    d["t"] = np.arange(len(d))
+    first_date = d["date"].min()
+    d["t"] = (d["date"] - first_date).dt.days / 30.4375  # elapsed months, fractional
     y_log = np.log(d["total_transaction_value_crore_bdt"])
 
     coeffs = np.polyfit(d["t"], y_log, 1)
@@ -59,13 +65,14 @@ def forecast_monthly_volume(df: pd.DataFrame, periods: int = 6) -> pd.DataFrame:
     fitted = slope * d["t"] + intercept
     resid_std = np.std(y_log - fitted, ddof=2)
 
-    future_t = np.arange(len(d), len(d) + periods)
-    future_log = slope * future_t + intercept
-    z80 = 1.2816
-    widths = resid_std * z80 * np.sqrt(1 + np.arange(1, periods + 1) / len(d))
-
     last_date = d["date"].max()
     future_dates = pd.date_range(last_date, periods=periods + 1, freq="MS")[1:]
+    future_t = (future_dates - first_date).days / 30.4375
+    future_log = slope * future_t + intercept
+
+    z80 = 1.2816
+    horizon_steps = np.arange(1, periods + 1)
+    widths = resid_std * z80 * np.sqrt(1 + horizon_steps / len(d))
 
     return pd.DataFrame(
         {
@@ -78,8 +85,15 @@ def forecast_monthly_volume(df: pd.DataFrame, periods: int = 6) -> pd.DataFrame:
 
 
 def monthly_growth_rate(df: pd.DataFrame) -> float:
-    """Average month-over-month compound growth rate, as a percentage."""
+    """Implied average month-over-month compound growth rate, as a percentage.
+
+    Computed from the log-linear slope over actual elapsed time (see
+    forecast_monthly_volume) rather than a plain pct_change().mean(), because
+    the series has real gaps between confirmed months.
+    """
     d = df.dropna(subset=["total_transaction_value_crore_bdt"]).copy()
-    ratios = d["total_transaction_value_crore_bdt"].pct_change().dropna() + 1
-    cagr = ratios.prod() ** (1 / len(ratios)) - 1
-    return cagr * 100
+    first_date = d["date"].min()
+    t = (d["date"] - first_date).dt.days / 30.4375
+    y_log = np.log(d["total_transaction_value_crore_bdt"])
+    slope, _ = np.polyfit(t, y_log, 1)
+    return (np.exp(slope) - 1) * 100
