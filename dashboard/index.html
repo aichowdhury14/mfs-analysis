@@ -1,0 +1,805 @@
+<title>MFS Bangladesh</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#F7F5EF;
+  --ink:#16211D;
+  --ink-soft:#3A473F;
+  --muted:#5C6B64;
+  --line:#DDD8C9;
+  --card:#FFFFFF;
+  --accent:#0C8A68;
+  --accent-ink:#063D2E;
+  --amber:#C7752A;
+  --blue:#3D6FC4;
+  --rose:#B23A6B;
+  --good:#0C8A68;
+  --bad:#B23A2A;
+  --shadow: 0 1px 2px rgba(22,33,29,0.06), 0 4px 16px rgba(22,33,29,0.05);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0E1613;
+    --ink:#EDEEE9;
+    --ink-soft:#C9CDC5;
+    --muted:#8C978F;
+    --line:#26332D;
+    --card:#151E1A;
+    --accent:#1FAE84;
+    --accent-ink:#8FE3C6;
+    --amber:#E0913D;
+    --blue:#5F92E0;
+    --rose:#D45E93;
+    --good:#1FAE84;
+    --bad:#E06A50;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0E1613;
+  --ink:#EDEEE9;
+  --ink-soft:#C9CDC5;
+  --muted:#8C978F;
+  --line:#26332D;
+  --card:#151E1A;
+  --accent:#1FAE84;
+  --accent-ink:#8FE3C6;
+  --amber:#E0913D;
+  --blue:#5F92E0;
+  --rose:#D45E93;
+  --good:#1FAE84;
+  --bad:#E06A50;
+  --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+}
+
+*{box-sizing:border-box;}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'IBM Plex Sans', system-ui, sans-serif;
+  padding:0 20px 64px;
+  font-variant-numeric: tabular-nums;
+}
+.wrap{max-width:1180px; margin:0 auto;}
+
+header{
+  padding:36px 0 20px;
+  border-bottom:1px solid var(--line);
+  display:flex; justify-content:space-between; align-items:flex-end; gap:16px; flex-wrap:wrap;
+}
+.eyebrow{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12px; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--accent); margin:0 0 8px;
+}
+h1{
+  font-family:'Newsreader', serif;
+  font-weight:600;
+  font-size:clamp(28px, 4vw, 42px);
+  margin:0; line-height:1.05;
+  text-wrap:balance;
+}
+.subhead{color:var(--muted); font-size:14.5px; max-width:520px; margin-top:8px; line-height:1.5;}
+.theme-toggle{
+  font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--muted);
+  background:var(--card); border:1px solid var(--line); border-radius:20px;
+  padding:6px 14px; cursor:pointer;
+}
+
+.source-strip{
+  font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:var(--muted);
+  padding:12px 0; border-bottom:1px solid var(--line);
+  display:flex; gap:18px; flex-wrap:wrap;
+}
+.source-strip b{color:var(--ink-soft); font-weight:500;}
+
+section{padding:36px 0; border-bottom:1px solid var(--line);}
+section:last-of-type{border-bottom:none;}
+.section-head{display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:18px;}
+h2{
+  font-family:'Newsreader', serif; font-weight:600; font-size:22px; margin:0;
+}
+.section-note{color:var(--muted); font-size:13px; max-width:460px;}
+
+/* stat tiles */
+.stats{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:12px; overflow:hidden;}
+.stat{background:var(--card); padding:20px 20px 18px;}
+.stat .label{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin-bottom:10px;}
+.stat .value{font-family:'Newsreader',serif; font-weight:600; font-size:30px; line-height:1;}
+.stat .delta{font-family:'IBM Plex Mono',monospace; font-size:12.5px; margin-top:8px; display:inline-flex; align-items:center; gap:4px;}
+.delta.up{color:var(--good);} .delta.down{color:var(--bad);}
+@media (max-width:820px){.stats{grid-template-columns:repeat(2,1fr);}}
+
+/* filter row */
+.filters{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:20px;}
+.filters label{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.03em;}
+select, .pill-btn{
+  font-family:'IBM Plex Sans',sans-serif; font-size:13.5px; color:var(--ink);
+  background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:7px 12px; cursor:pointer;
+}
+.pill-row{display:flex; gap:6px; flex-wrap:wrap;}
+.pill-btn{border-radius:20px; display:flex; align-items:center; gap:6px;}
+.pill-btn .dot{width:8px; height:8px; border-radius:50%; display:inline-block;}
+.pill-btn[data-active="false"]{opacity:.4;}
+
+.chart-grid{display:grid; grid-template-columns:1.3fr 1fr; gap:20px;}
+@media (max-width:900px){.chart-grid{grid-template-columns:1fr;}}
+.card{background:var(--card); border:1px solid var(--line); border-radius:12px; padding:20px 20px 12px; box-shadow:var(--shadow);}
+.card h3{font-family:'Newsreader',serif; font-size:16px; font-weight:600; margin:0 0 4px;}
+.card .card-sub{font-size:12px; color:var(--muted); margin-bottom:14px;}
+
+svg text{font-family:'IBM Plex Mono', monospace; fill:var(--muted);}
+.axis-line{stroke:var(--line); stroke-width:1;}
+.gridline{stroke:var(--line); stroke-width:1; stroke-dasharray:2 3;}
+
+.legend{display:flex; gap:14px; flex-wrap:wrap; font-size:12px; color:var(--ink-soft); margin-top:10px;}
+.legend .item{display:flex; align-items:center; gap:6px;}
+.legend .swatch{width:10px; height:10px; border-radius:2px; display:inline-block;}
+
+.tooltip{
+  position:absolute; pointer-events:none; background:var(--ink); color:var(--paper);
+  font-family:'IBM Plex Mono',monospace; font-size:11.5px; padding:8px 10px; border-radius:6px;
+  transform:translate(-50%,-115%); white-space:nowrap; opacity:0; transition:opacity .1s; z-index:5;
+  box-shadow:var(--shadow);
+}
+:root:not([data-theme="light"]) .tooltip{background:#EDEEE9; color:#0E1613;}
+:root[data-theme="dark"] .tooltip{background:#EDEEE9; color:#0E1613;}
+.chart-wrap{position:relative;}
+
+/* table view */
+table{width:100%; border-collapse:collapse; font-size:13px;}
+th,td{text-align:right; padding:8px 10px; border-bottom:1px solid var(--line);}
+th:first-child, td:first-child{text-align:left;}
+thead th{color:var(--muted); font-weight:500; font-size:11.5px; text-transform:uppercase; letter-spacing:.03em;}
+.table-toggle{font-size:12px; color:var(--accent); cursor:pointer; text-decoration:underline; text-underline-offset:2px; background:none; border:none; font-family:inherit; padding:0;}
+
+/* market share bars */
+.share-row{display:grid; grid-template-columns:110px 1fr 60px; align-items:center; gap:12px; margin-bottom:10px;}
+.share-row .name{font-size:13.5px; font-weight:500;}
+.share-track{background:var(--line); border-radius:6px; height:14px; overflow:hidden;}
+.share-fill{height:100%; border-radius:6px;}
+.share-row .pct{font-family:'IBM Plex Mono',monospace; font-size:13px; text-align:right;}
+.estimate-badge{
+  font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.04em;
+  color:var(--amber); border:1px solid var(--amber); border-radius:4px; padding:2px 6px; margin-left:8px;
+}
+
+/* upload panel */
+.upload-panel{border:1.5px dashed var(--line); border-radius:12px; padding:24px; text-align:center; background:var(--card);}
+.upload-panel input[type=file]{display:none;}
+.upload-btn{
+  display:inline-block; background:var(--accent); color:#fff; font-weight:500; font-size:13.5px;
+  padding:10px 20px; border-radius:8px; cursor:pointer; margin-top:8px;
+}
+.upload-hint{color:var(--muted); font-size:12.5px; margin-top:10px; line-height:1.5;}
+.upload-result{margin-top:20px; display:none;}
+code.inline{
+  font-family:'IBM Plex Mono',monospace; background:var(--paper); border:1px solid var(--line);
+  border-radius:4px; padding:1px 6px; font-size:12px;
+}
+
+footer{padding-top:28px; color:var(--muted); font-size:12px; line-height:1.6;}
+footer a{color:var(--accent);}
+</style>
+
+<div class="wrap">
+
+<header>
+  <div>
+    <p class="eyebrow">Bangladesh &middot; Payment Systems</p>
+    <h1>Mobile Financial Services, tracked</h1>
+    <p class="subhead">Industry-wide bKash, Nagad, Rocket, Upay and every licensed MFS operator, combined — from Bangladesh Bank's own statistics, 2020–2025.</p>
+  </div>
+  <button class="theme-toggle" id="themeToggle">Theme: System</button>
+</header>
+
+<div class="source-strip">
+  <span><b>Primary source:</b> Bangladesh Bank Financial Stability Reports 2022–2024 (official, annual)</span>
+  <span><b>Secondary:</b> Press-reported monthly figures, 2024–25</span>
+  <span><b>Provider shares:</b> estimated from trade press</span>
+</div>
+
+<section id="overview">
+  <div class="section-head">
+    <div>
+      <h2>2024 at a glance</h2>
+      <p class="section-note">Year-on-year change against 2023, industry-wide.</p>
+    </div>
+  </div>
+  <div class="stats" id="statTiles"></div>
+</section>
+
+<section id="trends">
+  <div class="section-head">
+    <div>
+      <h2>Growth trend, 2020–2024</h2>
+      <p class="section-note">Annual figures as filed with Bangladesh Bank's Financial Stability Report. Toggle a metric to isolate it.</p>
+    </div>
+  </div>
+  <div class="filters">
+    <label>Metric</label>
+    <div class="pill-row" id="metricPills"></div>
+  </div>
+  <div class="card">
+    <h3>Selected metric over time</h3>
+    <p class="card-sub" id="trendSub">Active accounts, in millions</p>
+    <div class="chart-wrap"><svg id="trendChart" viewBox="0 0 900 340" style="width:100%; height:auto;"></svg><div class="tooltip" id="trendTip"></div></div>
+  </div>
+</section>
+
+<section id="composition">
+  <div class="section-head">
+    <div>
+      <h2>What people actually use it for</h2>
+      <p class="section-note">Share of total transaction value by category. Cash-in/cash-out/P2P still dominate, but the mix is shifting.</p>
+    </div>
+    <button class="table-toggle" id="toggleCompTable">View as table</button>
+  </div>
+  <div class="chart-grid">
+    <div class="card">
+      <h3>Category share by year</h3>
+      <p class="card-sub">Percent of total MFS transaction value</p>
+      <div class="chart-wrap"><svg id="stackChart" viewBox="0 0 620 340" style="width:100%; height:auto;"></svg><div class="tooltip" id="stackTip"></div></div>
+      <div class="legend" id="stackLegend"></div>
+    </div>
+    <div class="card">
+      <h3>Cash-in vs cash-out</h3>
+      <p class="card-sub">Billion BDT — the 2024 crossover</p>
+      <div class="chart-wrap"><svg id="gapChart" viewBox="0 0 460 340" style="width:100%; height:auto;"></svg><div class="tooltip" id="gapTip"></div></div>
+    </div>
+  </div>
+  <div id="compTableWrap" style="display:none; margin-top:18px;"></div>
+</section>
+
+<section id="monthly">
+  <div class="section-head">
+    <div>
+      <h2>Inside 2024–25</h2>
+      <p class="section-note">Monthly transaction value as reported in the press, citing Bangladesh Bank data. Sparser than the annual series — filled in as more months are confirmed.</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3>Monthly transaction value</h3>
+    <p class="card-sub">Lakh crore BDT (1 lakh crore = 1 trillion BDT)</p>
+    <div class="chart-wrap"><svg id="monthlyChart" viewBox="0 0 900 260" style="width:100%; height:auto;"></svg><div class="tooltip" id="monthlyTip"></div></div>
+  </div>
+</section>
+
+<section id="providers">
+  <div class="section-head">
+    <div>
+      <h2>Who's using what <span class="estimate-badge">Estimate</span></h2>
+      <p class="section-note">Bangladesh Bank does not publish a per-operator breakdown. These shares are estimates compiled from trade-press reporting — treat as directional, not official.</p>
+    </div>
+  </div>
+  <div class="filters">
+    <label>Snapshot</label>
+    <select id="periodSelect"></select>
+  </div>
+  <div class="card" id="shareCard" style="max-width:640px;"></div>
+</section>
+
+<section id="upload">
+  <div class="section-head">
+    <div>
+      <h2>Compare your own numbers</h2>
+      <p class="section-note">Have a business's MFS transaction log? Upload it to see it plotted against the national monthly trend — nothing leaves your browser.</p>
+    </div>
+  </div>
+  <div class="upload-panel">
+    <p style="margin:0 0 4px; font-weight:500;">Drop a CSV, or</p>
+    <label class="upload-btn" for="csvInput">Choose file</label>
+    <input type="file" id="csvInput" accept=".csv">
+    <p class="upload-hint">Expected columns: <code class="inline">month</code> (YYYY-MM) and <code class="inline">value</code> (any unit — you'll set it below).<br>Processed entirely client-side. Nothing is uploaded or stored anywhere.</p>
+    <div class="upload-result" id="uploadResult">
+      <div class="filters" style="justify-content:center; margin-bottom:16px;">
+        <label>Your unit</label>
+        <select id="unitSelect">
+          <option value="crore">Crore BDT</option>
+          <option value="lakh">Lakh BDT</option>
+          <option value="taka">Taka (BDT)</option>
+        </select>
+      </div>
+      <div class="chart-wrap"><svg id="compareChart" viewBox="0 0 860 300" style="width:100%; height:auto;"></svg><div class="tooltip" id="compareTip"></div></div>
+      <div class="legend" id="compareLegend"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Built from Bangladesh Bank Financial Stability Reports (2022, 2023, 2024) and press coverage from The Business Standard, The Financial Express and Future Startup. Provider market-share figures are third-party estimates, not official Bangladesh Bank data. Figures compiled September 2026 — check <a href="https://www.bb.org.bd/en/index.php/financialactivity/mfsdata" target="_blank" rel="noopener">Bangladesh Bank's MFS data page</a> for the latest official release.
+</footer>
+
+</div>
+
+<script>
+// ---------- DATA ----------
+const INDUSTRY = [
+  {year:2020,agents:1.06,clients:99.3,active:32.3,txns:3172,volume:5616},
+  {year:2021,agents:1.12,clients:111.5,active:41.1,txns:3837,volume:7701},
+  {year:2022,agents:1.55,clients:190.8,active:57.4,txns:4736,volume:10159},
+  {year:2023,agents:1.72,clients:220.5,active:83.7,txns:6161,volume:13529},
+  {year:2024,agents:1.83,clients:238.67,active:88.88,txns:7301,volume:17452},
+];
+
+const CATEGORY = [
+  {year:2021, inward_remittance:26.0, cash_in:2295.0, cash_out:2024.0, p2p:2298.0, salary:292.0, utility:132.0, merchant:344.0, government:51.0, others:239.0, total:7701.0},
+  {year:2022, inward_remittance:38.0, cash_in:3086.0, cash_out:2826.0, p2p:2866.0, salary:346.0, utility:208.0, merchant:365.0, government:81.9, others:342.0, total:10158.9},
+  {year:2023, inward_remittance:62.7, cash_in:4230.7, cash_out:3831.3, p2p:3747.9, salary:361.4, utility:331.0, merchant:603.4, government:136.0, others:231.5, total:13535.9},
+  {year:2024, inward_remittance:107.86, cash_in:5062.0, cash_out:5511.0, p2p:4541.0, salary:542.0, utility:344.0, merchant:808.0, government:148.0, others:359.0, total:17422.86},
+];
+
+const CAT_COLORS = {
+  cash_in: 'var(--accent)', cash_out: 'var(--amber)', p2p: 'var(--blue)',
+  merchant: 'var(--rose)', salary: '#8B8F5A', utility:'#6B8FA8', government:'#A87B4F', inward_remittance:'#7A6B9C', others:'#9B9B8F'
+};
+const CAT_LABELS = {
+  cash_in:'Cash In', cash_out:'Cash Out', p2p:'P2P', merchant:'Merchant Payment', salary:'Salary (B2P)',
+  utility:'Utility Bill', government:'Government', inward_remittance:'Inward Remittance', others:'Others'
+};
+const CAT_ORDER = ['cash_in','cash_out','p2p','merchant','salary','utility','government','inward_remittance','others'];
+
+const MONTHLY = [
+  {ym:'2024-06', crore:122000},
+  {ym:'2024-08', crore:137000},
+  {ym:'2024-09', crore:145000},
+  {ym:'2024-10', crore:154000},
+  {ym:'2024-11', crore:156787.74},
+  {ym:'2024-12', crore:164739.36},
+  {ym:'2025-01', crore:171664.12},
+];
+
+const SHARES = {
+  '2022-12':[{p:'bKash',v:39.9},{p:'Nagad',v:18.1},{p:'Rocket',v:11.7},{p:'Others',v:30.3}],
+  '2025-01':[{p:'bKash',v:40.07},{p:'Nagad',v:25.39},{p:'Others',v:34.54}],
+};
+const SHARE_COLORS = {bKash:'var(--accent)', Nagad:'var(--amber)', Rocket:'var(--blue)', Others:'var(--muted)'};
+
+// ---------- THEME ----------
+const themeBtn = document.getElementById('themeToggle');
+function applyTheme(mode){
+  if(mode==='system'){ document.documentElement.removeAttribute('data-theme'); themeBtn.textContent='Theme: System'; }
+  else { document.documentElement.setAttribute('data-theme', mode); themeBtn.textContent = 'Theme: ' + (mode==='dark'?'Dark':'Light'); }
+  try{ localStorage.setItem('mfs-theme', mode); }catch(e){}
+}
+let savedTheme='system';
+try{ savedTheme = localStorage.getItem('mfs-theme') || 'system'; }catch(e){}
+applyTheme(savedTheme);
+themeBtn.addEventListener('click', ()=>{
+  const order=['system','light','dark'];
+  const cur = order[(order.indexOf(savedTheme)+1)%3];
+  savedTheme=cur; applyTheme(cur);
+});
+
+function cssVar(name){
+  return getComputedStyle(document.documentElement).getPropertyValue(name.replace('var(','').replace(')','')).trim() || name;
+}
+function resolveColor(v){
+  if(v.startsWith('var(')) return cssVar(v);
+  return v;
+}
+
+// ---------- STAT TILES ----------
+const statTiles = document.getElementById('statTiles');
+const last = INDUSTRY[INDUSTRY.length-1], prev = INDUSTRY[INDUSTRY.length-2];
+function pct(a,b){ return ((a-b)/b*100); }
+function fmtPct(v){ return (v>=0?'+':'') + v.toFixed(1) + '%'; }
+const tiles = [
+  {label:'Total transaction value', value:'৳'+(last.volume/1000).toFixed(1)+'T', sub:'billion BDT: '+last.volume.toLocaleString(), delta:pct(last.volume,prev.volume)},
+  {label:'Active accounts', value:last.active.toFixed(1)+'M', delta:pct(last.active,prev.active)},
+  {label:'Registered clients', value:last.clients.toFixed(1)+'M', delta:pct(last.clients,prev.clients)},
+  {label:'Total transactions', value:(last.txns/1000).toFixed(2)+'B', sub:last.txns.toLocaleString()+' million', delta:pct(last.txns,prev.txns)},
+];
+statTiles.innerHTML = tiles.map(t=>`
+  <div class="stat">
+    <div class="label">${t.label}</div>
+    <div class="value">${t.value}</div>
+    <div class="delta ${t.delta>=0?'up':'down'}">${t.delta>=0?'&#8593;':'&#8595;'} ${fmtPct(t.delta)} YoY</div>
+  </div>
+`).join('');
+
+// ---------- TREND CHART ----------
+const METRICS = [
+  {key:'active', label:'Active accounts', unit:'millions', color:'var(--accent)'},
+  {key:'clients', label:'Registered clients', unit:'millions', color:'var(--blue)'},
+  {key:'agents', label:'Agents', unit:'millions', color:'var(--amber)'},
+  {key:'volume', label:'Transaction value', unit:'billion BDT', color:'var(--rose)'},
+];
+let activeMetric = 'active';
+const metricPills = document.getElementById('metricPills');
+function renderPills(){
+  metricPills.innerHTML = METRICS.map(m=>`
+    <button class="pill-btn" data-key="${m.key}" data-active="${m.key===activeMetric}">
+      <span class="dot" style="background:${resolveColor(m.color)}"></span>${m.label}
+    </button>
+  `).join('');
+  metricPills.querySelectorAll('.pill-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{ activeMetric = btn.dataset.key; renderPills(); drawTrend(); });
+  });
+}
+renderPills();
+
+function svgNS(tag){ return document.createElementNS('http://www.w3.org/2000/svg', tag); }
+
+function drawTrend(){
+  const svg = document.getElementById('trendChart');
+  svg.innerHTML='';
+  const metric = METRICS.find(m=>m.key===activeMetric);
+  document.getElementById('trendSub').textContent = metric.label + ', in ' + metric.unit;
+  const W=900,H=340, padL=56,padR=20,padT=20,padB=36;
+  const vals = INDUSTRY.map(d=>d[metric.key]);
+  const maxV = Math.max(...vals)*1.15, minV=0;
+  const x = i => padL + (W-padL-padR) * i/(INDUSTRY.length-1);
+  const y = v => padT + (H-padT-padB) * (1 - (v-minV)/(maxV-minV));
+
+  // gridlines + y labels
+  const steps=4;
+  for(let s=0;s<=steps;s++){
+    const v = maxV*s/steps;
+    const yy = y(v);
+    const line = svgNS('line');
+    line.setAttribute('x1',padL); line.setAttribute('x2',W-padR); line.setAttribute('y1',yy); line.setAttribute('y2',yy);
+    line.setAttribute('class','gridline'); svg.appendChild(line);
+    const txt = svgNS('text');
+    txt.setAttribute('x',padL-8); txt.setAttribute('y',yy+4); txt.setAttribute('text-anchor','end'); txt.setAttribute('font-size','11');
+    txt.textContent = v>=1000? (v/1000).toFixed(1)+'k' : Math.round(v);
+    svg.appendChild(txt);
+  }
+  // x labels
+  INDUSTRY.forEach((d,i)=>{
+    const txt = svgNS('text');
+    txt.setAttribute('x',x(i)); txt.setAttribute('y',H-padB+20); txt.setAttribute('text-anchor','middle'); txt.setAttribute('font-size','12');
+    txt.textContent = d.year; svg.appendChild(txt);
+  });
+
+  // area fill
+  const color = resolveColor(metric.color);
+  let areaPath = `M ${x(0)} ${y(0)} `;
+  INDUSTRY.forEach((d,i)=> areaPath += `L ${x(i)} ${y(d[metric.key])} `);
+  areaPath += `L ${x(INDUSTRY.length-1)} ${y(0)} Z`;
+  const area = svgNS('path');
+  area.setAttribute('d',areaPath); area.setAttribute('fill',color); area.setAttribute('opacity','0.10');
+  svg.appendChild(area);
+
+  // line
+  let linePath = '';
+  INDUSTRY.forEach((d,i)=>{ linePath += (i===0?'M ':'L ') + x(i) + ' ' + y(d[metric.key]) + ' '; });
+  const line = svgNS('path');
+  line.setAttribute('d',linePath); line.setAttribute('fill','none'); line.setAttribute('stroke',color);
+  line.setAttribute('stroke-width','2.5'); line.setAttribute('stroke-linejoin','round'); line.setAttribute('stroke-linecap','round');
+  svg.appendChild(line);
+
+  // points + hover
+  const tip = document.getElementById('trendTip');
+  INDUSTRY.forEach((d,i)=>{
+    const c = svgNS('circle');
+    c.setAttribute('cx',x(i)); c.setAttribute('cy',y(d[metric.key])); c.setAttribute('r','9'); c.setAttribute('fill','transparent');
+    c.style.cursor='pointer';
+    const dot = svgNS('circle');
+    dot.setAttribute('cx',x(i)); dot.setAttribute('cy',y(d[metric.key])); dot.setAttribute('r','4'); dot.setAttribute('fill',color);
+    dot.setAttribute('stroke', resolveColor('--card') ); dot.setAttribute('stroke-width','2');
+    svg.appendChild(dot);
+    c.addEventListener('mousemove',(e)=>{
+      const rect = svg.getBoundingClientRect();
+      tip.style.left = ((x(i)/W)*rect.width) + 'px';
+      tip.style.top = ((y(d[metric.key])/H)*rect.height) + 'px';
+      tip.style.opacity='1';
+      tip.innerHTML = `<b>${d.year}</b> &middot; ${d[metric.key].toLocaleString()} ${metric.unit}`;
+    });
+    c.addEventListener('mouseleave', ()=> tip.style.opacity='0');
+    svg.appendChild(c);
+  });
+}
+drawTrend();
+
+// ---------- STACKED COMPOSITION CHART ----------
+function drawStack(){
+  const svg = document.getElementById('stackChart');
+  svg.innerHTML='';
+  const W=620,H=340, padL=20,padR=20,padT=10,padB=30;
+  const bw = (W-padL-padR)/CATEGORY.length * 0.55;
+  const gap = (W-padL-padR)/CATEGORY.length;
+  const tip = document.getElementById('stackTip');
+
+  CATEGORY.forEach((d,i)=>{
+    let yOff = H-padB;
+    const cx = padL + gap*i + gap/2;
+    CAT_ORDER.forEach(key=>{
+      const share = d[key]/d.total;
+      const segH = share*(H-padT-padB);
+      const rect = svgNS('rect');
+      rect.setAttribute('x', cx-bw/2); rect.setAttribute('y', yOff-segH+1);
+      rect.setAttribute('width', bw); rect.setAttribute('height', Math.max(segH-2,0));
+      rect.setAttribute('fill', resolveColor(CAT_COLORS[key]));
+      rect.setAttribute('rx','2');
+      rect.style.cursor='pointer';
+      rect.addEventListener('mousemove',(e)=>{
+        const rectBox = svg.getBoundingClientRect();
+        tip.style.left = ((cx/W)*rectBox.width) + 'px';
+        tip.style.top = (((yOff-segH/2)/H)*rectBox.height) + 'px';
+        tip.style.opacity='1';
+        tip.innerHTML = `<b>${CAT_LABELS[key]}</b> &middot; ${d.year} &middot; ${(share*100).toFixed(1)}%`;
+      });
+      rect.addEventListener('mouseleave', ()=> tip.style.opacity='0');
+      svg.appendChild(rect);
+      yOff -= segH;
+    });
+    const txt = svgNS('text');
+    txt.setAttribute('x',cx); txt.setAttribute('y',H-padB+18); txt.setAttribute('text-anchor','middle'); txt.setAttribute('font-size','12');
+    txt.textContent = d.year; svg.appendChild(txt);
+  });
+
+  document.getElementById('stackLegend').innerHTML = CAT_ORDER.map(k=>`
+    <span class="item"><span class="swatch" style="background:${resolveColor(CAT_COLORS[k])}"></span>${CAT_LABELS[k]}</span>
+  `).join('');
+}
+drawStack();
+
+// ---------- CASH GAP CHART ----------
+function drawGap(){
+  const svg = document.getElementById('gapChart');
+  svg.innerHTML='';
+  const W=460,H=340, padL=50,padR=20,padT=20,padB=36;
+  const tip = document.getElementById('gapTip');
+  const vals = CATEGORY.flatMap(d=>[d.cash_in,d.cash_out]);
+  const maxV = Math.max(...vals)*1.1;
+  const x = i => padL + (W-padL-padR) * i/(CATEGORY.length-1);
+  const y = v => padT + (H-padT-padB) * (1 - v/maxV);
+
+  const steps=4;
+  for(let s=0;s<=steps;s++){
+    const v = maxV*s/steps; const yy=y(v);
+    const line = svgNS('line');
+    line.setAttribute('x1',padL); line.setAttribute('x2',W-padR); line.setAttribute('y1',yy); line.setAttribute('y2',yy);
+    line.setAttribute('class','gridline'); svg.appendChild(line);
+    const txt = svgNS('text');
+    txt.setAttribute('x',padL-8); txt.setAttribute('y',yy+4); txt.setAttribute('text-anchor','end'); txt.setAttribute('font-size','10.5');
+    txt.textContent = Math.round(v); svg.appendChild(txt);
+  }
+  CATEGORY.forEach((d,i)=>{
+    const txt = svgNS('text');
+    txt.setAttribute('x',x(i)); txt.setAttribute('y',H-padB+20); txt.setAttribute('text-anchor','middle'); txt.setAttribute('font-size','12');
+    txt.textContent = d.year; svg.appendChild(txt);
+  });
+
+  ['cash_in','cash_out'].forEach(key=>{
+    const color = resolveColor(CAT_COLORS[key]);
+    let path='';
+    CATEGORY.forEach((d,i)=>{ path += (i===0?'M ':'L ') + x(i) + ' ' + y(d[key]) + ' '; });
+    const line = svgNS('path');
+    line.setAttribute('d',path); line.setAttribute('fill','none'); line.setAttribute('stroke',color);
+    line.setAttribute('stroke-width','2.5'); line.setAttribute('stroke-linecap','round'); line.setAttribute('stroke-linejoin','round');
+    svg.appendChild(line);
+    CATEGORY.forEach((d,i)=>{
+      const c = svgNS('circle');
+      c.setAttribute('cx',x(i)); c.setAttribute('cy',y(d[key])); c.setAttribute('r','9'); c.setAttribute('fill','transparent');
+      c.style.cursor='pointer';
+      const dot = svgNS('circle');
+      dot.setAttribute('cx',x(i)); dot.setAttribute('cy',y(d[key])); dot.setAttribute('r','4'); dot.setAttribute('fill',color);
+      dot.setAttribute('stroke',resolveColor('--card')); dot.setAttribute('stroke-width','2');
+      svg.appendChild(dot);
+      c.addEventListener('mousemove',()=>{
+        const rectBox = svg.getBoundingClientRect();
+        tip.style.left = ((x(i)/W)*rectBox.width)+'px';
+        tip.style.top = ((y(d[key])/H)*rectBox.height)+'px';
+        tip.style.opacity='1';
+        tip.innerHTML = `<b>${CAT_LABELS[key]}</b> &middot; ${d.year} &middot; ${d[key].toLocaleString()}B BDT`;
+      });
+      c.addEventListener('mouseleave',()=>tip.style.opacity='0');
+      svg.appendChild(c);
+    });
+  });
+
+  const leg = document.createElement('div');
+  document.querySelectorAll('#gapChart').forEach(()=>{});
+}
+drawGap();
+// gap legend (static, injected once)
+(function(){
+  const card = document.getElementById('gapChart').closest('.card');
+  const leg = document.createElement('div');
+  leg.className='legend';
+  leg.innerHTML = `<span class="item"><span class="swatch" style="background:${resolveColor(CAT_COLORS.cash_in)}"></span>Cash In</span>
+                    <span class="item"><span class="swatch" style="background:${resolveColor(CAT_COLORS.cash_out)}"></span>Cash Out</span>`;
+  card.appendChild(leg);
+})();
+
+// ---------- COMPOSITION TABLE TOGGLE ----------
+document.getElementById('toggleCompTable').addEventListener('click', (e)=>{
+  const wrap = document.getElementById('compTableWrap');
+  const showing = wrap.style.display !== 'none';
+  if(showing){ wrap.style.display='none'; e.target.textContent='View as table'; return; }
+  e.target.textContent='Hide table';
+  wrap.style.display='block';
+  let rows = CAT_ORDER.map(k=>{
+    const cells = CATEGORY.map(d=> (d[k]).toLocaleString(undefined,{maximumFractionDigits:1}) ).join('</td><td>');
+    return `<tr><td>${CAT_LABELS[k]}</td><td>${cells}</td></tr>`;
+  }).join('');
+  wrap.innerHTML = `<div class="card"><table>
+    <thead><tr><th>Category (Billion BDT)</th>${CATEGORY.map(d=>'<th>'+d.year+'</th>').join('')}</tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>`;
+});
+
+// ---------- MONTHLY CHART ----------
+function drawMonthly(){
+  const svg = document.getElementById('monthlyChart');
+  svg.innerHTML='';
+  const W=900,H=260, padL=60,padR=20,padT=20,padB=36;
+  const tip = document.getElementById('monthlyTip');
+  const vals = MONTHLY.map(d=>d.crore/100000); // lakh crore
+  const maxV = Math.max(...vals)*1.15;
+  const x = i => padL + (W-padL-padR) * i/(MONTHLY.length-1);
+  const y = v => padT + (H-padT-padB) * (1 - v/maxV);
+
+  const steps=4;
+  for(let s=0;s<=steps;s++){
+    const v = maxV*s/steps; const yy=y(v);
+    const line = svgNS('line');
+    line.setAttribute('x1',padL); line.setAttribute('x2',W-padR); line.setAttribute('y1',yy); line.setAttribute('y2',yy);
+    line.setAttribute('class','gridline'); svg.appendChild(line);
+    const txt = svgNS('text');
+    txt.setAttribute('x',padL-8); txt.setAttribute('y',yy+4); txt.setAttribute('text-anchor','end'); txt.setAttribute('font-size','11');
+    txt.textContent = v.toFixed(1); svg.appendChild(txt);
+  }
+  MONTHLY.forEach((d,i)=>{
+    const txt = svgNS('text');
+    txt.setAttribute('x',x(i)); txt.setAttribute('y',H-padB+20); txt.setAttribute('text-anchor','middle'); txt.setAttribute('font-size','11.5');
+    txt.textContent = d.ym; svg.appendChild(txt);
+  });
+
+  const color = resolveColor('var(--accent)');
+  const bw = 28;
+  MONTHLY.forEach((d,i)=>{
+    const v = d.crore/100000;
+    const rect = svgNS('rect');
+    rect.setAttribute('x', x(i)-bw/2); rect.setAttribute('y', y(v));
+    rect.setAttribute('width', bw); rect.setAttribute('height', (H-padB)-y(v));
+    rect.setAttribute('fill', color); rect.setAttribute('rx','4');
+    rect.style.cursor='pointer';
+    rect.addEventListener('mousemove',()=>{
+      const rectBox = svg.getBoundingClientRect();
+      tip.style.left = ((x(i)/W)*rectBox.width)+'px';
+      tip.style.top = ((y(v)/H)*rectBox.height)+'px';
+      tip.style.opacity='1';
+      tip.innerHTML = `<b>${d.ym}</b> &middot; ${v.toFixed(2)} lakh crore BDT`;
+    });
+    rect.addEventListener('mouseleave',()=>tip.style.opacity='0');
+    svg.appendChild(rect);
+  });
+}
+drawMonthly();
+
+// ---------- PROVIDER SHARE ----------
+const periodSelect = document.getElementById('periodSelect');
+Object.keys(SHARES).forEach(p=>{
+  const opt = document.createElement('option'); opt.value=p; opt.textContent=p; periodSelect.appendChild(opt);
+});
+periodSelect.value = Object.keys(SHARES)[Object.keys(SHARES).length-1];
+function drawShares(){
+  const data = SHARES[periodSelect.value];
+  const card = document.getElementById('shareCard');
+  card.innerHTML = data.map(d=>`
+    <div class="share-row">
+      <div class="name">${d.p}</div>
+      <div class="share-track"><div class="share-fill" style="width:${d.v}%; background:${resolveColor(SHARE_COLORS[d.p]||'var(--muted)')}"></div></div>
+      <div class="pct">${d.v.toFixed(1)}%</div>
+    </div>
+  `).join('');
+}
+periodSelect.addEventListener('change', drawShares);
+drawShares();
+
+// ---------- CSV UPLOAD & COMPARE ----------
+const csvInput = document.getElementById('csvInput');
+const uploadResult = document.getElementById('uploadResult');
+const unitSelect = document.getElementById('unitSelect');
+let userData = [];
+
+function parseCSV(text){
+  const lines = text.trim().split(/\r?\n/);
+  const header = lines[0].split(',').map(h=>h.trim().toLowerCase());
+  const mi = header.indexOf('month'), vi = header.indexOf('value');
+  if(mi===-1 || vi===-1) return [];
+  return lines.slice(1).map(l=>{
+    const cols = l.split(',');
+    return {month: cols[mi] && cols[mi].trim(), value: parseFloat(cols[vi])};
+  }).filter(d=>d.month && !isNaN(d.value));
+}
+
+function toCrore(v, unit){
+  if(unit==='crore') return v;
+  if(unit==='lakh') return v/100;
+  if(unit==='taka') return v/10000000;
+  return v;
+}
+
+csvInput.addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (evt)=>{
+    userData = parseCSV(evt.target.result);
+    if(userData.length===0){ alert('Could not find "month" and "value" columns. Check the CSV header.'); return; }
+    uploadResult.style.display='block';
+    drawCompare();
+  };
+  reader.readAsText(file);
+});
+unitSelect.addEventListener('change', drawCompare);
+
+function drawCompare(){
+  if(userData.length===0) return;
+  const svg = document.getElementById('compareChart');
+  svg.innerHTML='';
+  const W=860,H=300, padL=64,padR=20,padT=20,padB=40;
+  const tip = document.getElementById('compareTip');
+
+  const months = Array.from(new Set([...MONTHLY.map(d=>d.ym), ...userData.map(d=>d.month)])).sort();
+  const natMap = Object.fromEntries(MONTHLY.map(d=>[d.ym, d.crore/100000]));
+  const userMap = {};
+  userData.forEach(d=> userMap[d.month] = toCrore(d.value, unitSelect.value));
+  const userMax = Math.max(...Object.values(userMap));
+  const natMax = Math.max(...Object.values(natMap));
+
+  const x = i => padL + (W-padL-padR) * i/(months.length-1 || 1);
+  const yNat = v => padT + (H-padT-padB) * (1 - v/(natMax*1.15));
+  const yUser = v => padT + (H-padT-padB) * (1 - v/(userMax*1.15 || 1));
+
+  months.forEach((m,i)=>{
+    const txt = svgNS('text');
+    txt.setAttribute('x',x(i)); txt.setAttribute('y',H-padB+20); txt.setAttribute('text-anchor','middle'); txt.setAttribute('font-size','10.5');
+    txt.setAttribute('transform', `rotate(0)`);
+    txt.textContent = m; svg.appendChild(txt);
+  });
+  // y label left (national)
+  for(let s=0;s<=4;s++){
+    const v = natMax*1.15*s/4; const yy=yNat(v);
+    const txt = svgNS('text');
+    txt.setAttribute('x',padL-8); txt.setAttribute('y',yy+4); txt.setAttribute('text-anchor','end'); txt.setAttribute('font-size','10.5');
+    txt.textContent = v.toFixed(1); svg.appendChild(txt);
+    const line = svgNS('line');
+    line.setAttribute('x1',padL); line.setAttribute('x2',W-padR); line.setAttribute('y1',yy); line.setAttribute('y2',yy);
+    line.setAttribute('class','gridline'); svg.appendChild(line);
+  }
+
+  function plotLine(map, yFn, color, label, unitLabel){
+    const pts = months.map((m,i)=> map[m]!==undefined ? [i,map[m]] : null).filter(Boolean);
+    let path='';
+    pts.forEach((p,i)=>{ path += (i===0?'M ':'L ') + x(p[0]) + ' ' + yFn(p[1]) + ' '; });
+    const line = svgNS('path');
+    line.setAttribute('d',path); line.setAttribute('fill','none'); line.setAttribute('stroke',resolveColor(color));
+    line.setAttribute('stroke-width','2.5'); line.setAttribute('stroke-linecap','round'); line.setAttribute('stroke-linejoin','round');
+    svg.appendChild(line);
+    pts.forEach(p=>{
+      const c = svgNS('circle');
+      c.setAttribute('cx',x(p[0])); c.setAttribute('cy',yFn(p[1])); c.setAttribute('r','9'); c.setAttribute('fill','transparent');
+      c.style.cursor='pointer';
+      const dot = svgNS('circle');
+      dot.setAttribute('cx',x(p[0])); dot.setAttribute('cy',yFn(p[1])); dot.setAttribute('r','4'); dot.setAttribute('fill',resolveColor(color));
+      dot.setAttribute('stroke',resolveColor('--card')); dot.setAttribute('stroke-width','2');
+      svg.appendChild(dot);
+      c.addEventListener('mousemove',()=>{
+        const rectBox = svg.getBoundingClientRect();
+        tip.style.left = ((x(p[0])/W)*rectBox.width)+'px';
+        tip.style.top = ((yFn(p[1])/H)*rectBox.height)+'px';
+        tip.style.opacity='1';
+        tip.innerHTML = `<b>${label}</b> &middot; ${months[p[0]]} &middot; ${p[1].toFixed(2)} ${unitLabel}`;
+      });
+      c.addEventListener('mouseleave',()=>tip.style.opacity='0');
+      svg.appendChild(c);
+    });
+  }
+  plotLine(natMap, yNat, 'var(--accent)', 'National', 'lakh crore BDT');
+  plotLine(userMap, yUser, 'var(--rose)', 'Your data', 'crore BDT (normalized)');
+
+  document.getElementById('compareLegend').innerHTML = `
+    <span class="item"><span class="swatch" style="background:${resolveColor('var(--accent)')}"></span>National (lakh crore BDT)</span>
+    <span class="item"><span class="swatch" style="background:${resolveColor('var(--rose)')}"></span>Your data (own scale)</span>
+  `;
+}
+
+window.addEventListener('resize', ()=>{ drawTrend(); drawStack(); drawGap(); drawMonthly(); if(userData.length) drawCompare(); });
+</script>

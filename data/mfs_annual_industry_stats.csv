@@ -1,0 +1,6 @@
+year,banks_authorized,banks_operating,agents_millions,registered_clients_millions,active_accounts_millions,total_transactions_millions,total_transaction_volume_billion_bdt,source
+2020,15,14,1.06,99.3,32.3,3172,5616,BB Financial Stability Report 2023 (Appendix XXXVI)
+2021,13,10,1.12,111.5,41.1,3837,7701,BB Financial Stability Report 2024 (Appendix XXXVII)
+2022,13,13,1.55,190.8,57.4,4736,10159,BB Financial Stability Report 2024 (Appendix XXXVII)
+2023,13,13,1.72,220.5,83.7,6161,13529,BB Financial Stability Report 2024 (Appendix XXXVII)
+2024,13,13,1.83,238.67,88.88,7301,17452,BB Financial Stability Report 2024 (Appendix XXXVII)

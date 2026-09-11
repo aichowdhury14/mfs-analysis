@@ -1,0 +1,5 @@
+year,inward_remittance,cash_in,cash_out,p2p,salary_disbursement_b2p,utility_bill_p2b,merchant_payment,government_payment,others,total,source
+2021,26.0,2295.0,2024.0,2298.0,292.0,132.0,344.0,51.0,239.0,7701.0,BB Financial Stability Report 2022 (Table 7.2)
+2022,38.0,3086.0,2826.0,2866.0,346.0,208.0,365.0,81.9,342.0,10158.9,BB Financial Stability Report 2023 (Table 7.2)
+2023,62.70,4230.70,3831.30,3747.90,361.40,331.00,603.40,136.00,231.50,13535.90,BB Financial Stability Report 2023 (Table 7.2)
+2024,107.86,5062.0,5511.0,4541.0,542.0,344.0,808.0,148.0,359.0,17422.86,BB Financial Stability Report 2024 (Table 7.2)

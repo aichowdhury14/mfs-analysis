@@ -1,0 +1,8 @@
+period,provider,market_share_percent,is_estimate,source
+2022-12,bKash,39.9,TRUE,Financial Express - Competition landscape of MFS industry
+2022-12,Nagad,18.1,TRUE,Financial Express - Competition landscape of MFS industry
+2022-12,Rocket,11.7,TRUE,Financial Express - Competition landscape of MFS industry
+2022-12,Others,30.3,TRUE,Financial Express - Competition landscape of MFS industry
+2025-01,bKash,40.07,TRUE,Future Startup - State of MFS Industry in Bangladesh 2025
+2025-01,Nagad,25.39,TRUE,Future Startup - State of MFS Industry in Bangladesh 2025
+2025-01,Others,34.54,TRUE,Derived as remainder (Rocket/Upay/mCash/Tap combined) - approximate
